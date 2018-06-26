@@ -2,6 +2,7 @@ package com.malsolo.crypto;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.malsolo.crypto.util.Utils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class ProviderTest {
 
     @BeforeClass
     public static void installBCProvider() {
-        Security.addProvider(new BouncyCastleProvider());
+        Utils.installBouncyCastleProvider();
     }
 
     @Test
