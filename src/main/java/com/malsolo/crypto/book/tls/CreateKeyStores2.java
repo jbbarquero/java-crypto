@@ -8,6 +8,9 @@ import org.bouncycastle.operator.OperatorCreationException;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -33,6 +36,8 @@ public class CreateKeyStores2 {
                 .setProvider("BC")
                 .getCertificate(trustCertHolder);
 
+        writeCertificate(Paths.get("trustCert.cer"), trustCert.getEncoded());
+
         //CA Certificate with Extensions
         KeyPair caKp = kpGen.generateKeyPair();
 
@@ -45,6 +50,8 @@ public class CreateKeyStores2 {
                 .setProvider("BC")
                 .getCertificate(caCertHolder);
 
+        writeCertificate(Paths.get("caCert.cer"), caCert.getEncoded());
+
         //End Entity Certificate
         KeyPair endKp = kpGen.generateKeyPair();
 
@@ -56,6 +63,8 @@ public class CreateKeyStores2 {
         X509Certificate endCert = new JcaX509CertificateConverter()
                 .setProvider("BC")
                 .getCertificate(endCertHolder);
+
+        writeCertificate(Paths.get("endCert.cer"), endCert.getEncoded());
 
         // client credentials
         KeyStore keyStore = KeyStore.getInstance("PKCS12", "BC");
@@ -85,6 +94,10 @@ public class CreateKeyStores2 {
                 new Certificate[] { trustCert });
 
         keyStore.store(new FileOutputStream(Utils2.SERVER_NAME + ".jks"), Utils2.SERVER_PASSWORD);
+    }
+
+    private static void writeCertificate(Path filePath, byte[] certificateBytes) throws IOException {
+        Files.write(filePath, certificateBytes);
     }
 
 }
