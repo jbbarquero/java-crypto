@@ -6,12 +6,59 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Basic SSL Server with client authentication and id checking.
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
+
+
+    private static String printX509Certificate(X509Certificate x509Certificate) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            byte[] der = x509Certificate.getEncoded();
+            md.update(der);
+            byte[] digest = md.digest();
+            String digestHex = DatatypeConverter.printHexBinary(digest);
+            return digestHex.toLowerCase();
+        } catch (NoSuchAlgorithmException | CertificateEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * View certificates exchanged during the handshake.
+     */
+    private static void viewCertificates(SSLSession sslSession) {
+        System.out.println("Certificate chain sent to the peer during the handshake");
+        Certificate[] localCertificates = sslSession.getLocalCertificates();
+        Arrays.stream(localCertificates)
+                .map(c -> (X509Certificate) c)
+                .map(SSLServerWithClientAuthIdExample::printX509Certificate)
+                .forEach(System.out::println);
+
+        System.out.println("Certificate chain received from the peer during the handshake");
+        try {
+            Certificate[] peerCertificates = sslSession.getPeerCertificates();
+            Arrays.stream(peerCertificates)
+                    .map(c -> (X509Certificate) c)
+                    .map(SSLServerWithClientAuthIdExample::printX509Certificate)
+                    .forEach(System.out::println);
+        } catch (SSLPeerUnverifiedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Check that the principal we have been given is for the end entity.
      */
@@ -71,9 +118,13 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
         sslSock.startHandshake();
 
         // process if principal checks out
-        if (isEndEntity(sslSock.getSession())) {
+        SSLSession sslSession = sslSock.getSession();
+        viewCertificates(sslSession);
+        if (isEndEntity(sslSession)) {
+            System.out.println("doProtocol");
             doProtocol(sslSock);
         }
 
     }
+
 }
