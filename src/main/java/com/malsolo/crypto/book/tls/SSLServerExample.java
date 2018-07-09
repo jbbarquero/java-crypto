@@ -15,7 +15,7 @@ public class SSLServerExample {
     /**
      * Carry out the '!' protocol - server side.
      */
-    private static void doProtocol(Socket sSock) throws IOException {
+    static void doProtocol(Socket sSock) throws IOException {
         System.out.println("session started.");
 
         InputStream in = sSock.getInputStream();

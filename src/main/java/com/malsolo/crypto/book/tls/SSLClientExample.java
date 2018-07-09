@@ -14,7 +14,7 @@ public class SSLClientExample {
     /**
      * Carry out the '!' protocol - client side.
      */
-    private static void doProtocol(Socket cSock) throws IOException {
+    static void doProtocol(Socket cSock) throws IOException {
         OutputStream out = cSock.getOutputStream();
         InputStream in = cSock.getInputStream();
 
