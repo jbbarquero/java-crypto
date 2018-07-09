@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 
+import static com.malsolo.crypto.book.tls.UtilsCertificates.viewCertificates;
+
 /**
  * SSL Client with client-side authentication.
  */
@@ -44,6 +46,10 @@ public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
                 Paths.get("certsFromUtils/trustStore.jks").toFile());
         SSLSocketFactory fact = sslContext.getSocketFactory();
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
+
+        cSock.startHandshake();
+
+        viewCertificates(cSock.getSession());
 
         doProtocol(cSock);
 
