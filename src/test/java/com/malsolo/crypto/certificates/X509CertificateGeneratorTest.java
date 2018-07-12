@@ -17,7 +17,7 @@ public class X509CertificateGeneratorTest {
         KeyPair keyPair = Utils.generateRSAKeyPair();
 
         //When
-        X509Certificate cert = X509CertificateGenerator.generateCertificate(keyPair);
+        X509Certificate cert = X509CertificateGenerator.generateV1Certificate(keyPair);
 
         // Then
         assertThat(cert).isNotNull();

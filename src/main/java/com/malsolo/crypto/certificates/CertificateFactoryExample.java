@@ -13,7 +13,7 @@ public class CertificateFactoryExample {
 
     public static void main(String[] args) throws GeneralSecurityException {
         KeyPair keyPair = Utils.generateRSAKeyPair();
-        X509Certificate x509Certificate = X509CertificateGenerator.generateCertificate(keyPair);
+        X509Certificate x509Certificate = X509CertificateGenerator.generateV1Certificate(keyPair);
         byte[] x509CertificateEncoded = x509Certificate.getEncoded();
 
         InputStream in = new ByteArrayInputStream(x509CertificateEncoded);

@@ -19,11 +19,7 @@ public class Utils {
      */
     public static KeyPair generateRSAKeyPair() throws GeneralSecurityException {
 
-        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-            Security.addProvider(new BouncyCastleProvider());
-            System.out.printf("Installed provider: %s\n",
-                    Security.getProvider(BouncyCastleProvider.PROVIDER_NAME));
-        }
+        installBouncyCastleProvider();
 
         KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA", "BC");
 

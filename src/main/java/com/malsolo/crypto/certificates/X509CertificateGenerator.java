@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class X509CertificateGenerator {
 
-    public static X509Certificate generateCertificate(KeyPair pair)
+    public static X509Certificate generateV1Certificate(KeyPair pair)
             throws InvalidKeyException, NoSuchProviderException, SignatureException {
 
         Utils.installBouncyCastleProvider();
@@ -25,10 +25,10 @@ public class X509CertificateGenerator {
         X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator();
 
         certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
-        certGen.setIssuerDN(new X500Principal("CN=Test Certificate"));
+        certGen.setIssuerDN(new X500Principal("CN=Test Certificate Issuer"));
         certGen.setNotBefore(new Date(System.currentTimeMillis() - 50000));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + 50000));
-        certGen.setSubjectDN(new X500Principal("CN=Test Certificate"));
+        certGen.setSubjectDN(new X500Principal("CN=Test Certificate Subject"));
         certGen.setPublicKey(pair.getPublic());
         certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
 
