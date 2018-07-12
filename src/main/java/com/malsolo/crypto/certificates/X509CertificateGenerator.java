@@ -12,6 +12,7 @@ import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.X509Certificate;
+import java.security.cert.X509Extension;
 import java.util.Date;
 
 public class X509CertificateGenerator {
@@ -25,20 +26,12 @@ public class X509CertificateGenerator {
         X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator();
 
         certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
-        certGen.setIssuerDN(new X500Principal("CN=Test Certificate Issuer"));
+        certGen.setIssuerDN(new X500Principal("CN=Test Certificate V1 Issuer"));
         certGen.setNotBefore(new Date(System.currentTimeMillis() - 50000));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + 50000));
-        certGen.setSubjectDN(new X500Principal("CN=Test Certificate Subject"));
+        certGen.setSubjectDN(new X500Principal("CN=Test Certificate V1 Subject"));
         certGen.setPublicKey(pair.getPublic());
         certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
-
-        certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
-
-        certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
-
-        certGen.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_serverAuth));
-
-        certGen.addExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName(GeneralName.rfc822Name, "test@test.test")));
 
         return certGen.generateX509Certificate(pair.getPrivate(), "BC");
     }
@@ -54,6 +47,61 @@ public class X509CertificateGenerator {
         return null;
     }
     */
+
+    public static X509Certificate generateV3Certificate(KeyPair pair) throws InvalidKeyException,
+            NoSuchProviderException, SignatureException {
+        // generate the certificate
+        X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator();
+
+        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
+        certGen.setIssuerDN(new X500Principal("CN=Test Certificate V3 Issuer"));
+        certGen.setNotBefore(new Date(System.currentTimeMillis() - 50000));
+        certGen.setNotAfter(new Date(System.currentTimeMillis() + 50000));
+        certGen.setSubjectDN(new X500Principal("CN=Test Certificate V3 Subject"));
+        certGen.setPublicKey(pair.getPublic());
+        certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
+
+        certGen.addExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
+
+        certGen.addExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
+
+        certGen.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_serverAuth));
+
+        certGen.addExtension(X509Extensions.SubjectAlternativeName, false, new GeneralNames(new GeneralName(GeneralName.rfc822Name, "test@test.test")));
+
+        return certGen.generateX509Certificate(pair.getPrivate(), "BC");
+    }
+
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        // create the keys
+        KeyPair         pair = Utils.generateRSAKeyPair();
+
+        // generate the certificate
+        X509Certificate cert = generateV1Certificate(pair);
+
+        // show some basic validation
+        cert.checkValidity(new Date());
+
+        cert.verify(cert.getPublicKey());
+
+        System.out.println("valid V1 certificate generated");
+
+        //V3 certificate
+        KeyPair pair4V3 = Utils.generateRSAKeyPair();
+        X509Certificate certV3 = generateV3Certificate(pair);
+        cert.checkValidity(new Date());
+        cert.verify(certV3.getPublicKey());
+        System.out.println("valid V3 certificate generated");
+
+        byte[] usageExt = certV3.getExtensionValue(X509Extensions.KeyUsage.getId());
+        System.out.println(usageExt == null ? "null" : new String(usageExt));
+    }
+
 
 
     public static PKCS10CertificationRequest generateCertificateRequest(KeyPair pair) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
