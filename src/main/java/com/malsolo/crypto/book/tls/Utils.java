@@ -6,7 +6,6 @@ import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
-//import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 import javax.security.auth.x500.X500Principal;
 import javax.security.auth.x500.X500PrivateCredential;
@@ -14,6 +13,8 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+
+//import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 public class Utils {
 
