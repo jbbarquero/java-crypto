@@ -3,56 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.malsolo.crypto</groupId>
-    <artifactId>beginning-java-crypto</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>java-crypto</artifactId>
+    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>beginning-java-crypto</name>
+    <name>java-crypto</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.version>4.12</junit.version>
-        <assertj.version>3.10.0</assertj.version>
-        <bouncycastle.version>1.59</bouncycastle.version>
-        <lombok.version>1.18.0</lombok.version>
-    </properties>
+    <modules>
+        <module>beginning-java-crypto</module>
+    </modules>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>
