@@ -27,16 +27,20 @@ import org.bouncycastle.pkcs.PKCSException;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static com.malsolo.crypto.book.tls.Utils2.calculateDate;
 import static com.malsolo.crypto.book.tls.Utils2.calculateSerialNumber;
+import static com.malsolo.crypto.book.tls.Utils2.writeCertificate;
 
 public class PKCS10CertRequestWithBouncyCastle160Example {
 
@@ -113,10 +117,14 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
     private static void caSendCertificateChainToClient(X509Certificate[] certificateChain) throws IOException {
         JcaPEMWriter pemWriter = new JcaPEMWriter(new OutputStreamWriter(System.out));
 
+        final AtomicInteger i = new AtomicInteger(0);
         Arrays.stream(certificateChain).forEach(certificate -> {
             try {
                 pemWriter.writeObject(certificate);
-            } catch (IOException e) {
+                writeCertificate(
+                        Paths.get(String.format("certsFromCSR/cert%d.cer", i.getAndIncrement())),
+                        certificate.getEncoded());
+            } catch (IOException | CertificateEncodingException e) {
                 throw new RuntimeException(e);
             }
         });
