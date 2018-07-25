@@ -18,7 +18,10 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -72,7 +75,7 @@ public class Utils2 {
      * @return an X509CertificateHolder containing the V1 certificate.
      */
     public static X509CertificateHolder createTrustAnchor(KeyPair keyPair, String sigAlg)
-            throws OperatorCreationException, CertificateException {
+            throws OperatorCreationException {
         X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
@@ -130,7 +133,7 @@ public class Utils2 {
     certificate.
      * @param sigAlg the signature algorithm to sign the certificate with.
      * @param certKey public key to be installed in the certificate.
-     * @param followingCACerts
+     * @param followingCACerts for creating CA=true object for the given path length constraint.
      * @return an X509CertificateHolder containing the V3 certificate.
      */
     public static X509CertificateHolder createIntermediateCertificate(
@@ -233,4 +236,9 @@ public class Utils2 {
 
         return certBldr.build(signer);
     }
+
+    public static void writeCertificate(Path filePath, byte[] certificateBytes) throws IOException {
+        Files.write(filePath, certificateBytes);
+    }
+
 }

@@ -16,9 +16,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static com.malsolo.crypto.book.tls.Utils2.createEndEntity;
-import static com.malsolo.crypto.book.tls.Utils2.createIntermediateCertificate;
-import static com.malsolo.crypto.book.tls.Utils2.createTrustAnchor;
+import static com.malsolo.crypto.book.tls.Utils2.*;
 
 public class CreateKeyStores2 {
 
@@ -94,10 +92,6 @@ public class CreateKeyStores2 {
                 new Certificate[] { trustCert });
 
         keyStore.store(new FileOutputStream(Utils2.SERVER_NAME + ".jks"), Utils2.SERVER_PASSWORD);
-    }
-
-    private static void writeCertificate(Path filePath, byte[] certificateBytes) throws IOException {
-        Files.write(filePath, certificateBytes);
     }
 
 }
