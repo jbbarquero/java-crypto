@@ -138,7 +138,8 @@ public class PKCS10CertRequestExample {
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Mostoles")
-                .addRDN(BCStyle.O, "Malsolo");
+                .addRDN(BCStyle.O, "Malsolo")
+                .addRDN(BCStyle.CN, "End Certificate");
 
         X500Name subject = x500NameBld.build();
 

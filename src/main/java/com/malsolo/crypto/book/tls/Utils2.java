@@ -80,8 +80,8 @@ public class Utils2 {
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Las Rozas")
-                .addRDN(BCStyle.O, "ING Modelbank")
-                .addRDN(BCStyle.CN, "MB Root Certificate");
+                .addRDN(BCStyle.O, "MALSOLO")
+                .addRDN(BCStyle.CN, "Root Certificate");
 
         X500Name name = x500NameBld.build();
 
@@ -145,8 +145,8 @@ public class Utils2 {
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Las Rozas")
-                .addRDN(BCStyle.O, "ING Modelbank")
-                .addRDN(BCStyle.CN, "MB Intermediate Certificate");
+                .addRDN(BCStyle.O, "MALSOLO")
+                .addRDN(BCStyle.CN, "Intermediate Certificate");
 
         X500Name subject = x500NameBld.build();
 
@@ -175,7 +175,7 @@ public class Utils2 {
 //                        new GeneralNames(
 //                                new GeneralName(
 //                                        GeneralName.rfc822Name,
-//                                        "feedback-crypto@modelbank.ing.com")))
+//                                        "feedback-crypto@malsolo.com")))
         ;
 
         ContentSigner signer = new JcaContentSignerBuilder(sigAlg)
@@ -208,8 +208,8 @@ public class Utils2 {
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Las Rozas")
-                .addRDN(BCStyle.O, "ING Modelbank")
-                .addRDN(BCStyle.CN, "MB Server Certificate");
+                .addRDN(BCStyle.O, "MALSOLO")
+                .addRDN(BCStyle.CN, "Server Certificate");
 
         X500Name subject = x500NameBld.build();
 

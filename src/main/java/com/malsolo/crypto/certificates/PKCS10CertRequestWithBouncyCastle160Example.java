@@ -1,5 +1,6 @@
 package com.malsolo.crypto.certificates;
 
+import com.malsolo.crypto.book.tls.Utils2;
 import com.malsolo.crypto.util.Utils;
 import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -55,11 +56,11 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
         PublicKey requestPublicKey = new JcaPEMKeyConverter().getPublicKey(request.getSubjectPublicKeyInfo());
 
         X509v3CertificateBuilder certificateBuilder = new JcaX509v3CertificateBuilder(
-                request.getSubject(),
+                new JcaX509CertificateHolder(rootCert).getSubject(),
                 calculateSerialNumber(),
                 calculateDate(0),
                 calculateDate(24 * 31),
-                new JcaX509CertificateHolder(rootCert).getSubject(),
+                request.getSubject(),
                 requestPublicKey);
 
         JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
@@ -161,7 +162,9 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
 
         // create a root certificate
         KeyPair rootPair = Utils.generateRSAKeyPair();
-        X509Certificate rootCert = X509CertificateGenerator.generateV1Certificate(rootPair);
+
+        X509CertificateHolder certificateHolder = Utils2.createTrustAnchor(rootPair, "SHA256WithRSAEncryption");
+        X509Certificate rootCert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 
         X509Certificate[] buildChain = caBuildCertificateChainFromRequest(clientCertificationRequest(), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
 
