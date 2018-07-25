@@ -11,6 +11,7 @@
 
     <modules>
         <module>beginning-java-crypto</module>
+        <module>simple-certificate-authority</module>
     </modules>
 
 </project>
