@@ -28,7 +28,6 @@ import org.bouncycastle.pkcs.PKCSException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -38,9 +37,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static com.malsolo.crypto.book.tls.Utils2.calculateDate;
-import static com.malsolo.crypto.book.tls.Utils2.calculateSerialNumber;
-import static com.malsolo.crypto.book.tls.Utils2.writeCertificate;
+import static com.malsolo.crypto.book.tls.Utils2.*;
 
 public class PKCS10CertRequestWithBouncyCastle160Example {
 
