@@ -19,10 +19,6 @@ import java.util.Enumeration;
 
 public class PKCS10CertCreateExample {
 
-    public static X509Certificate[] buildChain2() throws Exception {
-        return new X509Certificate[] {};
-    }
-
     public static X509Certificate[] buildChain() throws Exception {
         // create the certification request
         KeyPair pair = Utils.generateRSAKeyPair();

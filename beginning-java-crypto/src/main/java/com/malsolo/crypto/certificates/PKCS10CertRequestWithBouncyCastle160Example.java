@@ -42,11 +42,11 @@ import static com.malsolo.crypto.book.tls.Utils2.*;
 
 public class PKCS10CertRequestWithBouncyCastle160Example {
 
-    private static PKCS10CertificationRequest clientCertificationRequest() throws Exception {
+    public static PKCS10CertificationRequest clientCertificationRequest() throws Exception {
         return PKCS10CertRequestExample.createPKCS10WithExtensions(Utils.generateRSAKeyPair(), "SHA256withRSA");
     }
 
-    private static X509Certificate[] caBuildCertificateChainFromRequest(PKCS10CertificationRequest request, X509Certificate rootCert, String signatureAlgorithm, PrivateKey privateKey) throws Exception {
+    public static X509Certificate[] caBuildCertificateChainFromRequest(PKCS10CertificationRequest request, X509Certificate rootCert, String signatureAlgorithm, PrivateKey privateKey) throws Exception {
         // validate the certification request
         if (!isValidPKCS10Request(request)) {
             System.out.println("request failed to verify!");
