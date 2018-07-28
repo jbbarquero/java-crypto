@@ -26,10 +26,15 @@ import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCSException;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyPair;
+import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
@@ -42,8 +47,10 @@ import static com.malsolo.crypto.book.tls.Utils2.*;
 
 public class PKCS10CertRequestWithBouncyCastle160Example {
 
-    public static PKCS10CertificationRequest clientCertificationRequest() throws Exception {
-        return PKCS10CertRequestExample.createPKCS10WithExtensions(Utils.generateRSAKeyPair(), "SHA256withRSA");
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromCSR";
+
+    public static PKCS10CertificationRequest clientCertificationRequest(KeyPair certPair) throws Exception {
+        return PKCS10CertRequestExample.createPKCS10WithExtensions(certPair, "SHA256withRSA");
     }
 
     public static X509Certificate[] caBuildCertificateChainFromRequest(PKCS10CertificationRequest request, X509Certificate rootCert, String signatureAlgorithm, PrivateKey privateKey) throws Exception {
@@ -120,7 +127,7 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
             try {
                 pemWriter.writeObject(certificate);
                 writeCertificate(
-                        Paths.get(String.format("certsFromCSR/cert%d.cer", i.getAndIncrement())),
+                        Paths.get(String.format("%s/cert%d.cer", CERTS_PATH, i.getAndIncrement())),
                         certificate.getEncoded());
             } catch (IOException | CertificateEncodingException e) {
                 throw new RuntimeException(e);
@@ -156,6 +163,58 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
 
     }
 
+    private static void createKeyStores(X509Certificate[] buildChain, KeyPair certPair) throws Exception {
+        // PKCS12 key store
+        System.out.println("····· Creating PKCS12 key store...");
+
+        KeyStore keyStore = KeyStore.getInstance("PKCS12", "BC");
+
+        keyStore.load(null, null);
+
+        keyStore.setKeyEntry("server", certPair.getPrivate(), "password".toCharArray(), buildChain);
+
+        Path keystorePkcs12 = Paths.get(CERTS_PATH, "keystore.p12");
+        try(OutputStream outputStream = Files.newOutputStream(keystorePkcs12)) {
+            keyStore.store(outputStream, "password".toCharArray());
+        }
+
+        keyStore.store(new FileOutputStream(CERTS_PATH + "/keystore.p12"), "password".toCharArray());
+
+        System.out.printf("····· PKCS12 key store created: %s\n", keystorePkcs12.toString());
+
+        // JKS key store
+        System.out.println("····· Creating JKS key store...");
+
+        keyStore = KeyStore.getInstance("JKS");
+
+        keyStore.load(null, null);
+
+        keyStore.setKeyEntry("server", certPair.getPrivate(), "password".toCharArray(), buildChain);
+
+        Path keystoreJks = Paths.get(CERTS_PATH, "keystore.jks");
+        try(OutputStream outputStream = Files.newOutputStream(keystoreJks)) {
+            keyStore.store(outputStream, "password".toCharArray());
+        }
+
+        System.out.printf("····· JKS key store created: %s\n", keystoreJks.toString());
+
+        // trust store
+        System.out.println("····· Creating JKS trust store...");
+
+        keyStore = KeyStore.getInstance("JKS");
+
+        keyStore.load(null, null);
+
+        keyStore.setCertificateEntry("server", buildChain[buildChain.length - 1]);
+
+        Path truststoreJks = Paths.get(CERTS_PATH, "truststore.jks");
+        try(OutputStream outputStream = Files.newOutputStream(truststoreJks)) {
+            keyStore.store(outputStream, "changeit".toCharArray());
+        }
+
+        System.out.printf("····· JKS trust store created: %s\n", truststoreJks.toString());
+
+    }
 
     public static void main(String[] args) throws Exception {
         Utils.installBouncyCastleProvider();
@@ -166,9 +225,13 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
         X509CertificateHolder certificateHolder = Utils2.createTrustAnchor(rootPair, "SHA256WithRSAEncryption");
         X509Certificate rootCert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 
-        X509Certificate[] buildChain = caBuildCertificateChainFromRequest(clientCertificationRequest(), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
+        KeyPair certPair = Utils.generateRSAKeyPair();
+        X509Certificate[] buildChain = caBuildCertificateChainFromRequest(clientCertificationRequest(certPair), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
 
         caSendCertificateChainToClient(buildChain);
 
+        createKeyStores(buildChain, certPair);
+
     }
+
 }

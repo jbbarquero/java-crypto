@@ -42,7 +42,8 @@ public class CertStoreExample {
         KeyPair rootPair = Utils.generateRSAKeyPair();
         X509CertificateHolder certificateHolder = Utils2.createTrustAnchor(rootPair, "SHA256WithRSAEncryption");
         X509Certificate rootCert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
-        return caBuildCertificateChainFromRequest(clientCertificationRequest(), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
+        KeyPair certPair = Utils.generateRSAKeyPair();
+        return caBuildCertificateChainFromRequest(clientCertificationRequest(certPair), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
     }
 
 }

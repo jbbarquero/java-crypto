@@ -64,7 +64,8 @@ Exception in thread "main" java.lang.IllegalArgumentException: unknown object in
     }
 
     private static X509Certificate[] buildChain(X509Certificate rootCert, KeyPair rootPair) throws Exception {
-        return caBuildCertificateChainFromRequest(clientCertificationRequest(), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
+        KeyPair certPair = Utils.generateRSAKeyPair();
+        return caBuildCertificateChainFromRequest(clientCertificationRequest(certPair), rootCert, "SHA256WithRSAEncryption", rootPair.getPrivate());
     }
 
     private static void validate(CertPath certPath, X509Certificate rootCert) throws Exception {
