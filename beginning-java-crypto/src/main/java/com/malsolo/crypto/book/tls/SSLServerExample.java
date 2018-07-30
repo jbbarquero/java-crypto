@@ -3,13 +3,17 @@ package com.malsolo.crypto.book.tls;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 /**
  * Basic SSL Server - using the '!' protocol.
+ * Usage:
+ * java -Djavax.net.ssl.keyStore=beginning-java-crypto/certsFromUtils/server.jks -Djavax.net.ssl.keyStorePassword=serverPassword com.malsolo.crypto.book.tls.SSLServerExample
  */
 public class SSLServerExample {
     /**
@@ -39,6 +43,9 @@ public class SSLServerExample {
         System.out.println("SSLServerExample");
         SSLServerSocketFactory fact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         SSLServerSocket        sSock = (SSLServerSocket)fact.createServerSocket(Constants.PORT_NO);
+
+        //Arrays.stream(sSock.getEnabledCipherSuites()).forEach(System.out::println);
+        UtilsCertificates.print("JKS", System.getProperty("javax.net.ssl.keyStore"), System.getProperty("javax.net.ssl.keyStorePassword"));
 
         SSLSocket sslSock = (SSLSocket)sSock.accept();
 

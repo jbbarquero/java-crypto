@@ -11,8 +11,13 @@ import java.security.KeyStore;
 
 /**
  * SSL Client with client-side authentication.
+ * Usage:
+ * java -Djavax.net.ssl.trustStorePassword=beginning-java-crypto/certsFromUtils/trustStore.jks com.malsolo.crypto.book.tls.SSLClientWithClientAuthExample
  */
 public class SSLClientWithClientAuthExample extends SSLClientExample {
+
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+
     /**
      * Create an SSL context with a KeyManager providing our identity
      */
@@ -34,7 +39,9 @@ public class SSLClientWithClientAuthExample extends SSLClientExample {
     }
 
     public static void main(String[] args) throws Exception {
-        SSLContext sslContext = createSSLContext(Paths.get("certsFromUtils/client.p12").toFile(), "PKCS12");
+        UtilsCertificates.print("JKS", System.getProperty("javax.net.ssl.trustStore"), "trustPassword");
+
+        SSLContext sslContext = createSSLContext(Paths.get(CERTS_PATH + "/client.p12").toFile(), "PKCS12");
         SSLSocketFactory fact = sslContext.getSocketFactory();
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
 

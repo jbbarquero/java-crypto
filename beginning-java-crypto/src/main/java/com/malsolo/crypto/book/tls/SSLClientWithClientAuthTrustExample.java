@@ -10,8 +10,13 @@ import static com.malsolo.crypto.book.tls.UtilsCertificates.viewCertificates;
 
 /**
  * SSL Client with client-side authentication.
+ * Usage:
+ * java com.malsolo.crypto.book.tls.SSLClientWithClientAuthTrustExample
  */
 public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
+
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+
     /**
      * Create an SSL context with both identity and trust store
      */
@@ -42,8 +47,8 @@ public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext       sslContext = createSSLContext(
-                Paths.get("certsFromUtils/client.p12").toFile(),
-                Paths.get("certsFromUtils/trustStore.jks").toFile());
+                Paths.get(CERTS_PATH + "/client.p12").toFile(),
+                Paths.get(CERTS_PATH + "/trustStore.jks").toFile());
         SSLSocketFactory fact = sslContext.getSocketFactory();
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
 

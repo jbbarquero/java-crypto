@@ -12,8 +12,12 @@ import static com.malsolo.crypto.book.tls.UtilsCertificates.viewCertificates;
 
 /**
  * Basic SSL Server with client authentication and id checking.
+ * Usage:
+ * java com.malsolo.crypto.book.tls.SSLServerWithClientAuthIdExample
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
+
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
 
     /**
      * Check that the principal we have been given is for the end entity.
@@ -60,8 +64,8 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext sslContext = createSSLContext(
-                Paths.get("certsFromUtils/server.jks").toFile(),
-                Paths.get("certsFromUtils/trustStore.jks").toFile());
+                Paths.get(CERTS_PATH + "/server.jks").toFile(),
+                Paths.get(CERTS_PATH + "/trustStore.jks").toFile());
 
         // create the server socket
         SSLServerSocketFactory fact = sslContext.getServerSocketFactory();
