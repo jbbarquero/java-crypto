@@ -14,6 +14,8 @@ import java.nio.file.Paths;
  */
 public class HTTPSClientExample {
 
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+
     /**
      * Verifier to check host has identified itself using "Test CA Certificate".
      */
@@ -34,10 +36,10 @@ public class HTTPSClientExample {
         SSLContext sslContext = SSLContextUtil.createSSLContext(
                 new SSLContextInfo(
                         KeyStoreType.PKCS12,
-                        Paths.get("certsFromUtils/client.p12").toFile(),
+                        Paths.get(CERTS_PATH + "/client.p12").toFile(),
                         Utils.CLIENT_PASSWORD,
                         KeyStoreType.JKS,
-                        Paths.get("certsFromUtils/trustStore.jks").toFile(),
+                        Paths.get(CERTS_PATH + "/trustStore.jks").toFile(),
                         Utils.TRUST_STORE_PASSWORD
                 )
         );

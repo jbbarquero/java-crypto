@@ -13,6 +13,8 @@ import java.security.Principal;
  */
 public class HTTPSServerExample {
 
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+
     /**
      * Read a HTTP request
      */
@@ -49,10 +51,10 @@ public class HTTPSServerExample {
         SSLContext sslContext = SSLContextUtil.createSSLContext(
                 new SSLContextInfo(
                         KeyStoreType.JKS,
-                        Paths.get("certsFromUtils/server.jks").toFile(),
+                        Paths.get(CERTS_PATH + "/server.jks").toFile(),
                         Utils.SERVER_PASSWORD,
                         KeyStoreType.JKS,
-                        Paths.get("certsFromUtils/trustStore.jks").toFile(),
+                        Paths.get(CERTS_PATH + "/trustStore.jks").toFile(),
                         Utils.TRUST_STORE_PASSWORD
                 )
         );
