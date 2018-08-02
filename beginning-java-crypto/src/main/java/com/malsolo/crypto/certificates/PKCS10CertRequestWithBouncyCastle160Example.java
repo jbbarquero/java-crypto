@@ -1,6 +1,5 @@
 package com.malsolo.crypto.certificates;
 
-import com.malsolo.crypto.book.tls.Utils2;
 import com.malsolo.crypto.util.Utils;
 import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -43,7 +42,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static com.malsolo.crypto.book.tls.Utils2.*;
+import static com.malsolo.crypto.tls.Utils2.*;
 
 public class PKCS10CertRequestWithBouncyCastle160Example {
 

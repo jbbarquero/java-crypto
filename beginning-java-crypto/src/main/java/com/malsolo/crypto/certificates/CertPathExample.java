@@ -1,6 +1,6 @@
 package com.malsolo.crypto.certificates;
 
-import com.malsolo.crypto.book.tls.Utils2;
+import com.malsolo.crypto.tls.Utils2;
 import com.malsolo.crypto.util.Utils;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
