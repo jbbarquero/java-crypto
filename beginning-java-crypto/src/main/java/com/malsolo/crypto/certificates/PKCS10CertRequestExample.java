@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.util.Arrays;
 import java.util.Vector;
 
 public class PKCS10CertRequestExample {
@@ -148,12 +149,10 @@ public class PKCS10CertRequestExample {
         ExtensionsGenerator extGen = new ExtensionsGenerator();
 
         extGen.addExtension(Extension.subjectAlternativeName, false,
-                new GeneralNames(
-                        new GeneralName(
-                                GeneralName.rfc822Name,
-                                "its@me.es"
-                        )
-                )
+                new GeneralNames(Arrays.asList(
+                        new GeneralName(GeneralName.dNSName, "127.0.0.1"),
+                        new GeneralName(GeneralName.dNSName, "*.malsolo.com")
+                ).stream().toArray(GeneralName[]::new))
         );
 
         Extensions extensions = extGen.generate();

@@ -15,7 +15,11 @@ import static com.malsolo.crypto.book.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
+    private static final String KEYSTORE_FILE_NAME = "client.p12";
+    private static final char[] KEYSTORE_PASSWORD = Utils.CLIENT_PASSWORD;
+    private static final String KEYSTORE_TYPE = "PKCS12";
+    private static final String TRUSTSTORE_FILE_NAME = "trustStore.jks";
 
     /**
      * Create an SSL context with both identity and trust store
@@ -47,8 +51,8 @@ public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext       sslContext = createSSLContext(
-                Paths.get(CERTS_PATH + "/client.p12").toFile(),
-                Paths.get(CERTS_PATH + "/trustStore.jks").toFile());
+                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(),
+                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile());
         SSLSocketFactory fact = sslContext.getSocketFactory();
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
 

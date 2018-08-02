@@ -12,7 +12,10 @@ import java.util.Arrays;
 /**
  * Basic SSL Client - using the '!' protocol.
  * Usage:
- * java -Djavax.net.ssl.trustStorePassword=beginning-java-crypto/certsFromUtils/trustStore.jks com.malsolo.crypto.book.tls.SSLClientExample
+ * java -Djavax.net.ssl.trustStore=beginning-java-crypto/certsFromUtils/trustStore.jks -Djavax.net.ssl.trustStorePassword=trustPassword com.malsolo.crypto.book.tls.SSLClientExample
+ * According https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html (Creating an X509TrustManager)
+ * "If the javax.net.ssl.trustStorePassword system property is also defined, then its value is used to check the integrity of the data in the truststore before opening it."
+ * It seems there is no need to provide the password, but we are going to read it in order to print the store entries.
  */
 public class SSLClientExample {
     /**
@@ -39,7 +42,7 @@ public class SSLClientExample {
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
 
         //Arrays.stream(cSock.getEnabledCipherSuites()).forEach(System.out::println);
-        UtilsCertificates.print("JKS", System.getProperty("javax.net.ssl.trustStore"), "trustPassword");
+        UtilsCertificates.print("JKS", System.getProperty("javax.net.ssl.trustStore"), System.getProperty("javax.net.ssl.trustStorePassword"));
 
         System.out.println("SSLClientExample do protocol...");
         doProtocol(cSock);

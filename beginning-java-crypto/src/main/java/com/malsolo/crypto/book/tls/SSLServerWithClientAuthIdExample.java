@@ -17,7 +17,9 @@ import static com.malsolo.crypto.book.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils";
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
+    private static final String KEYSTORE_FILE_NAME = "server.jks";
+    private static final String TRUSTSTORE_FILE_NAME = "trustStore.jks";
 
     /**
      * Check that the principal we have been given is for the end entity.
@@ -64,8 +66,8 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext sslContext = createSSLContext(
-                Paths.get(CERTS_PATH + "/server.jks").toFile(),
-                Paths.get(CERTS_PATH + "/trustStore.jks").toFile());
+                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(),
+                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile());
 
         // create the server socket
         SSLServerSocketFactory fact = sslContext.getServerSocketFactory();

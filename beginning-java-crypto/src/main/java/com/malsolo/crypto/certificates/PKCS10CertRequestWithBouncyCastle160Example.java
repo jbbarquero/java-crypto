@@ -152,7 +152,7 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
                 name,
                 calculateSerialNumber(),
                 calculateDate(0),
-                calculateDate(24 * 31),
+                calculateDate(24 * 365),
                 name,
                 keyPair.getPublic());
 
@@ -222,7 +222,7 @@ public class PKCS10CertRequestWithBouncyCastle160Example {
         // create a root certificate
         KeyPair rootPair = Utils.generateRSAKeyPair();
 
-        X509CertificateHolder certificateHolder = Utils2.createTrustAnchor(rootPair, "SHA256WithRSAEncryption");
+        X509CertificateHolder certificateHolder = createRootCertificate(rootPair, "SHA256WithRSAEncryption");//Utils2.createTrustAnchor(rootPair, "SHA256WithRSAEncryption");
         X509Certificate rootCert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 
         KeyPair certPair = Utils.generateRSAKeyPair();
