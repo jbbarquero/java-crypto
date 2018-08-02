@@ -30,7 +30,7 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
             X500Principal x500 = (X500Principal)id;
 
             System.out.println(x500.getName());
-            return x500.getName().equals("CN=Test End Certificate");
+            return x500.getName().equals(Utils.END_ENTITY_CERTIFICATE_SUBJECT_DN);
         }
 
         return false;

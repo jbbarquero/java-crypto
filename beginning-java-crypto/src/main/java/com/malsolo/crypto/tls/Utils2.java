@@ -14,14 +14,18 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v1CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -239,6 +243,14 @@ public class Utils2 {
 
     public static void writeCertificate(Path filePath, byte[] certificateBytes) throws IOException {
         Files.write(filePath, certificateBytes);
+    }
+
+    public static void createPemFile(Object pemContent, Path pemPath, String pemName) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(pemPath, StandardOpenOption.CREATE);
+             JcaPEMWriter pemWriter = new JcaPEMWriter(new OutputStreamWriter(outputStream))) {
+            pemWriter.writeObject(pemContent);
+        }
+        System.out.printf("%s created at: %s\n", pemName, pemPath.toString());
     }
 
 }

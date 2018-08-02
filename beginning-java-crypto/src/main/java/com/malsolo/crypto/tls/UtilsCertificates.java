@@ -21,16 +21,44 @@ import java.util.Collections;
 public class UtilsCertificates {
     private static String printX509Certificate(X509Certificate x509Certificate) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] der = x509Certificate.getEncoded();
-            md.update(der);
-            byte[] digest = md.digest();
-            String digestHex = DatatypeConverter.printHexBinary(digest);
-            return digestHex.toLowerCase();
+            byte[] digest = digestFromX509Certificate(x509Certificate, "MD5");
+            String digestHex = DatatypeConverter
+                    .printHexBinary(digestFromX509Certificate(x509Certificate, "SHA-1"))
+                    .toUpperCase();
+            //return digestHex.toLowerCase();
+            return String.format("[Serial: %s] MD5: %s (SHA1: %s). Owner: %s, Issuer: %s",
+                    x509Certificate.getSerialNumber().toString(),
+                    hexify(digest).toUpperCase(),
+                    digestHex,
+                    x509Certificate.getSubjectX500Principal().toString(),
+                    x509Certificate.getIssuerX500Principal().toString()
+                    );
         } catch (NoSuchAlgorithmException | CertificateEncodingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    private static byte[] digestFromX509Certificate(X509Certificate x509Certificate, String algorithm) throws NoSuchAlgorithmException, CertificateEncodingException {
+        MessageDigest md = MessageDigest.getInstance(algorithm);
+        byte[] der = x509Certificate.getEncoded();
+        md.update(der);
+        return md.digest();
+    }
+
+    private static String hexify(byte bytes[]) {
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7',
+                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+        StringBuffer buf = new StringBuffer(bytes.length * 2);
+
+        for (int i = 0; i < bytes.length; ++i) {
+            buf.append(hexDigits[(bytes[i] & 0xf0) >> 4]);
+            buf.append(hexDigits[bytes[i] & 0x0f]);
+            buf.append(":");
+        }
+
+        return buf.subSequence(0, buf.length()-1).toString();
     }
 
     /**

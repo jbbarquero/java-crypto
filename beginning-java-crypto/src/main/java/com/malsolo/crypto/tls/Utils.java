@@ -31,6 +31,8 @@ public class Utils {
     public static final String TRUST_STORE_NAME = "trustStore";
     public static final char[] TRUST_STORE_PASSWORD = "trustPassword".toCharArray();
 
+    public static final String END_ENTITY_CERTIFICATE_SUBJECT_DN = "CN=localhost";
+
     /**
      * Create a random 1024 bit RSA key pair.
      * Chapter 6 Utils.
@@ -53,7 +55,7 @@ public class Utils {
             throws Exception {
         X509V1CertificateGenerator certGen = new X509V1CertificateGenerator();
 
-        certGen.setSerialNumber(BigInteger.valueOf(1));
+        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
         certGen.setIssuerDN(new X500Principal("CN=Test CA Certificate"));
         certGen.setNotBefore(new Date(System.currentTimeMillis()));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + VALIDITY_PERIOD));
@@ -72,7 +74,7 @@ public class Utils {
             throws Exception {
         X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
 
-        certGen.setSerialNumber(BigInteger.valueOf(1));
+        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
         certGen.setIssuerDN(caCert.getSubjectX500Principal());
         certGen.setNotBefore(new Date(System.currentTimeMillis()));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + VALIDITY_PERIOD));
@@ -96,11 +98,11 @@ public class Utils {
             throws Exception {
         X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator();
 
-        certGen.setSerialNumber(BigInteger.valueOf(1));
+        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
         certGen.setIssuerDN(caCert.getSubjectX500Principal());
         certGen.setNotBefore(new Date(System.currentTimeMillis()));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + VALIDITY_PERIOD));
-        certGen.setSubjectDN(new X500Principal("CN=Test End Certificate"));
+        certGen.setSubjectDN(new X500Principal(END_ENTITY_CERTIFICATE_SUBJECT_DN));
         certGen.setPublicKey(entityKey);
         certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
 
