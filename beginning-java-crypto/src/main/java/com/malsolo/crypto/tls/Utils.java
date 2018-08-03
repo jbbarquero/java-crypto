@@ -31,7 +31,8 @@ public class Utils {
     public static final String TRUST_STORE_NAME = "trustStore";
     public static final char[] TRUST_STORE_PASSWORD = "trustPassword".toCharArray();
 
-    public static final String END_ENTITY_CERTIFICATE_SUBJECT_DN = "CN=localhost";
+    public static final String END_ENTITY_CERTIFICATE_SUBJECT_DN = "CN=clienthost";
+    public static final String END_SERVER_CERTIFICATE_SUBJECT_DN = "CN=localhost";
 
     /**
      * Create a random 1024 bit RSA key pair.
@@ -94,7 +95,8 @@ public class Utils {
      * Generate a sample V3 certificate to use as an end entity certificate.
      * Chapter 7 Utils.
      */
-    public static X509Certificate generateEndEntityCert(PublicKey entityKey, PrivateKey caKey, X509Certificate caCert)
+    public static X509Certificate generateEndEntityCert(PublicKey entityKey, PrivateKey caKey, X509Certificate caCert,
+                                                        String subjectDn)
             throws Exception {
         X509V3CertificateGenerator  certGen = new X509V3CertificateGenerator();
 
@@ -102,7 +104,7 @@ public class Utils {
         certGen.setIssuerDN(caCert.getSubjectX500Principal());
         certGen.setNotBefore(new Date(System.currentTimeMillis()));
         certGen.setNotAfter(new Date(System.currentTimeMillis() + VALIDITY_PERIOD));
-        certGen.setSubjectDN(new X500Principal(END_ENTITY_CERTIFICATE_SUBJECT_DN));
+        certGen.setSubjectDN(new X500Principal(subjectDn));
         certGen.setPublicKey(entityKey);
         certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
 
@@ -150,9 +152,15 @@ public class Utils {
             X509Certificate caCert)
             throws Exception {
         KeyPair         endPair = generateRSAKeyPair();
-        X509Certificate endCert = generateEndEntityCert(endPair.getPublic(), caKey, caCert);
+        X509Certificate endCert = generateEndEntityCert(endPair.getPublic(), caKey, caCert, END_ENTITY_CERTIFICATE_SUBJECT_DN);
 
         return new X500PrivateCredential(endCert, endPair.getPrivate(), END_ENTITY_ALIAS);
     }
 
+    public static X500PrivateCredential createServerCredential(PrivateKey caKey, X509Certificate caCert) throws Exception {
+        KeyPair         serverPair = generateRSAKeyPair();
+        X509Certificate serverCert = generateEndEntityCert(serverPair.getPublic(), caKey, caCert, END_SERVER_CERTIFICATE_SUBJECT_DN);
+
+        return new X500PrivateCredential(serverCert, serverPair.getPrivate(), END_ENTITY_ALIAS);
+    }
 }

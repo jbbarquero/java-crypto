@@ -18,6 +18,7 @@ public class CreateKeyStores {
         X500PrivateCredential rootCredential = Utils.createRootCredential();
         X500PrivateCredential interCredential = Utils.createIntermediateCredential(rootCredential.getPrivateKey(), rootCredential.getCertificate());
         X500PrivateCredential endCredential = Utils.createEndEntityCredential(interCredential.getPrivateKey(), interCredential.getCertificate());
+        X500PrivateCredential serverCredential = Utils.createServerCredential(interCredential.getPrivateKey(), interCredential.getCertificate());
 
         // client credentials
         KeyStore keyStore = KeyStore.getInstance("PKCS12", "BC");
@@ -35,7 +36,7 @@ public class CreateKeyStores {
         Utils2.createPemFile(endCredential.getPrivateKey(), Paths.get(Utils.CLIENT_NAME + "_PK.pem"), "Client PEM Private Key");
         Utils2.createPemFile(endCredential.getCertificate(), Paths.get(Utils.CLIENT_NAME + "_PC.pem"), "Client PEM Public Certificate");
 
-        // trust store for client
+        // trust store
         keyStore = KeyStore.getInstance("JKS");
 
         keyStore.load(null, null);
@@ -54,8 +55,8 @@ public class CreateKeyStores {
 
         keyStore.load(null, null);
 
-        keyStore.setKeyEntry(Utils.SERVER_NAME, rootCredential.getPrivateKey(), Utils.SERVER_PASSWORD,
-                new Certificate[] { rootCredential.getCertificate() });
+        keyStore.setKeyEntry(Utils.SERVER_NAME, serverCredential.getPrivateKey(), Utils.SERVER_PASSWORD,
+                new Certificate[] { serverCredential.getCertificate(), interCredential.getCertificate(), rootCredential.getCertificate() });
 
         keyStore.store(new FileOutputStream(Utils.SERVER_NAME + ".jks"), Utils.SERVER_PASSWORD);
 

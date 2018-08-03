@@ -25,7 +25,11 @@ public class UtilsCertificates {
             String digestHex = DatatypeConverter
                     .printHexBinary(digestFromX509Certificate(x509Certificate, "SHA-1"))
                     .toUpperCase();
-            //return digestHex.toLowerCase();
+
+            //From https://stackoverflow.com/a/1271148
+            //From http://www.javased.com/?post=1270703
+            //Should try https://stackoverflow.com/a/5470268
+
             return String.format("[Serial: %s] MD5: %s (SHA1: %s). Owner: %s, Issuer: %s",
                     x509Certificate.getSerialNumber().toString(),
                     hexify(digest).toUpperCase(),
@@ -50,11 +54,11 @@ public class UtilsCertificates {
         char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7',
                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-        StringBuffer buf = new StringBuffer(bytes.length * 2);
+        StringBuilder buf = new StringBuilder(bytes.length * 2);
 
-        for (int i = 0; i < bytes.length; ++i) {
-            buf.append(hexDigits[(bytes[i] & 0xf0) >> 4]);
-            buf.append(hexDigits[bytes[i] & 0x0f]);
+        for (byte aByte : bytes) {
+            buf.append(hexDigits[(aByte & 0xf0) >> 4]);
+            buf.append(hexDigits[aByte & 0x0f]);
             buf.append(":");
         }
 
