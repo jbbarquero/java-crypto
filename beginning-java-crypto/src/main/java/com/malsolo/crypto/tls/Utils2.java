@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Utils2 {
@@ -46,6 +47,10 @@ public class Utils2 {
     public static final char[] CLIENT_PASSWORD = "clientPassword2".toCharArray();
     public static final String TRUST_STORE_NAME = "trustStore2";
     public static final char[] TRUST_STORE_PASSWORD = "trustPassword2".toCharArray();
+    public static final String TRUST_STORE_NAME_ENTRY = "trust2";
+
+    public static final String END_ENTITY_CERTIFICATE_SUBJECT_DN = "clienthost";
+    public static final String END_SERVER_CERTIFICATE_SUBJECT_DN = "localhost";
 
     private static long serialNumberBase = System.currentTimeMillis();
 
@@ -204,7 +209,7 @@ public class Utils2 {
      */
     public static X509CertificateHolder createEndEntity(
             X509CertificateHolder signerCert, PrivateKey signerKey,
-            String sigAlg, PublicKey certKey)
+            String sigAlg, PublicKey certKey, String subjectDn)
             throws CertIOException, GeneralSecurityException,
             OperatorCreationException {
 
@@ -213,7 +218,7 @@ public class Utils2 {
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Las Rozas")
                 .addRDN(BCStyle.O, "MALSOLO")
-                .addRDN(BCStyle.CN, "Server Certificate");
+                .addRDN(BCStyle.CN, subjectDn);
 
         X500Name subject = x500NameBld.build();
 
@@ -253,4 +258,13 @@ public class Utils2 {
         System.out.printf("%s created at: %s\n", pemName, pemPath.toString());
     }
 
+    public static void createPemFile(Path pemPath, String pemName, Object... pemContents) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(pemPath, StandardOpenOption.CREATE);
+             JcaPEMWriter pemWriter = new JcaPEMWriter(new OutputStreamWriter(outputStream))) {
+            for (Object pemContent: pemContents) {
+                pemWriter.writeObject(pemContent);
+            }
+        }
+        System.out.printf("%s created at: %s\n", pemName, pemPath.toString());
+    }
 }

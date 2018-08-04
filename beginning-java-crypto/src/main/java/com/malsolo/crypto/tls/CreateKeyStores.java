@@ -41,7 +41,7 @@ public class CreateKeyStores {
 
         keyStore.load(null, null);
 
-        keyStore.setCertificateEntry(Utils.SERVER_NAME, rootCredential.getCertificate());
+        keyStore.setCertificateEntry(Utils.TRUST_STORE_NAME_ENTRY, rootCredential.getCertificate());
 
         Path clientTruststore = Paths.get(Utils.TRUST_STORE_NAME + ".jks");
         keyStore.store(new FileOutputStream(clientTruststore.toFile()), Utils.TRUST_STORE_PASSWORD);

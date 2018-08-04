@@ -30,6 +30,7 @@ public class Utils {
     public static final char[] CLIENT_PASSWORD = "clientPassword".toCharArray();
     public static final String TRUST_STORE_NAME = "trustStore";
     public static final char[] TRUST_STORE_PASSWORD = "trustPassword".toCharArray();
+    public static final String TRUST_STORE_NAME_ENTRY = "trust";
 
     public static final String END_ENTITY_CERTIFICATE_SUBJECT_DN = "CN=clienthost";
     public static final String END_SERVER_CERTIFICATE_SUBJECT_DN = "CN=localhost";
