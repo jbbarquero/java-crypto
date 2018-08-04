@@ -16,28 +16,30 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
 public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
     private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
-    private static final String KEYSTORE_FILE_NAME = "client.p12";
+    private static final String KEYSTORE_FILE_NAME = Utils.CLIENT_NAME + ".p12";
     private static final char[] KEYSTORE_PASSWORD = Utils.CLIENT_PASSWORD;
-    private static final String KEYSTORE_TYPE = "PKCS12";
-    private static final String TRUSTSTORE_FILE_NAME = "trustStore.jks";
+    private static final char[] KEYSTORE_KEY_PASSWORD = Utils.CLIENT_PASSWORD;
+    private static final String TRUSTSTORE_FILE_NAME = Utils.TRUST_STORE_NAME + ".jks";
+    private static final char[] TRUSTSTORE_PASSWORD = Utils.TRUST_STORE_PASSWORD;
 
     /**
      * Create an SSL context with both identity and trust store
      */
-    private static SSLContext createSSLContext(File clientStoreP12File, File trustoreFile) throws Exception {
+    private static SSLContext createSSLContext(File clientStoreP12File, char[] keystorePassword, char[] keystoreKeyPasword,
+                                               File trustoreFile, char[] truststorePassword) throws Exception {
         // set up a key manager for our local credentials
         KeyManagerFactory mgrFact = KeyManagerFactory.getInstance("SunX509");
         KeyStore clientStore = KeyStore.getInstance("PKCS12");
 
-        clientStore.load(new FileInputStream(clientStoreP12File), Utils.CLIENT_PASSWORD);
+        clientStore.load(new FileInputStream(clientStoreP12File), keystorePassword);
 
-        mgrFact.init(clientStore, Utils.CLIENT_PASSWORD);
+        mgrFact.init(clientStore, keystoreKeyPasword);
 
         // set up a trust manager so we can recognize the server
         TrustManagerFactory trustFact = TrustManagerFactory.getInstance("SunX509");
         KeyStore            trustStore = KeyStore.getInstance("JKS");
 
-        trustStore.load(new FileInputStream(trustoreFile), Utils.TRUST_STORE_PASSWORD);
+        trustStore.load(new FileInputStream(trustoreFile), truststorePassword);
 
         trustFact.init(trustStore);
 
@@ -51,8 +53,8 @@ public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext       sslContext = createSSLContext(
-                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(),
-                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile());
+                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(), KEYSTORE_PASSWORD, KEYSTORE_KEY_PASSWORD,
+                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile(), TRUSTSTORE_PASSWORD);
         SSLSocketFactory fact = sslContext.getSocketFactory();
         SSLSocket        cSock = (SSLSocket)fact.createSocket(Constants.HOST, Constants.PORT_NO);
 

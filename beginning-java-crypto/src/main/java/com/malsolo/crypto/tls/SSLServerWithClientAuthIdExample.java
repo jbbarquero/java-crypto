@@ -18,8 +18,12 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
     private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
-    private static final String KEYSTORE_FILE_NAME = "server.jks";
-    private static final String TRUSTSTORE_FILE_NAME = "trustStore.jks";
+    private static final String KEYSTORE_FILE_NAME = Utils.SERVER_NAME + ".jks";
+    private static final char[] KEYSTORE_PASSWORD = Utils.SERVER_PASSWORD;
+    private static final char[] KEYSTORE_KEY_PASSWORD = Utils.SERVER_PASSWORD;
+    private static final String TRUSTSTORE_FILE_NAME = Utils.TRUST_STORE_NAME + ".jks";
+    private static final char[] TRUSTSTORE_PASSWORD = Utils.TRUST_STORE_PASSWORD;
+    private static final String EXPECTED_ENTITY_NAME = Utils.END_ENTITY_CERTIFICATE_SUBJECT_DN;
 
     /**
      * Check that the principal we have been given is for the end entity.
@@ -30,7 +34,7 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
             X500Principal x500 = (X500Principal)id;
 
             System.out.println(x500.getName());
-            return x500.getName().equals(Utils.END_ENTITY_CERTIFICATE_SUBJECT_DN);
+            return x500.getName().equals(EXPECTED_ENTITY_NAME);
         }
 
         return false;
@@ -39,20 +43,21 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
     /**
      * Create an SSL context with identity and trust stores in place
      */
-    private static SSLContext createSSLContext(File serverJksFile, File trustoreFile) throws Exception {
+    private static SSLContext createSSLContext(File keystoreFile, char[] keystorePassword, char[] keystoreKeyPasword,
+                                               File trustoreFile, char[] truststorePassword) throws Exception {
         // set up a key manager for our local credentials
         KeyManagerFactory mgrFact = KeyManagerFactory.getInstance("SunX509");
         KeyStore serverStore = KeyStore.getInstance("JKS");
 
-        serverStore.load(new FileInputStream(serverJksFile), Utils.SERVER_PASSWORD);
+        serverStore.load(new FileInputStream(keystoreFile), keystorePassword);
 
-        mgrFact.init(serverStore, Utils.SERVER_PASSWORD);
+        mgrFact.init(serverStore, keystoreKeyPasword);
 
         // set up a trust manager so we can recognize the server
         TrustManagerFactory trustFact = TrustManagerFactory.getInstance("SunX509");
         KeyStore            trustStore = KeyStore.getInstance("JKS");
 
-        trustStore.load(new FileInputStream(trustoreFile), Utils.TRUST_STORE_PASSWORD);
+        trustStore.load(new FileInputStream(trustoreFile), truststorePassword);
 
         trustFact.init(trustStore);
 
@@ -66,8 +71,8 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
     public static void main(String[] args) throws Exception {
         SSLContext sslContext = createSSLContext(
-                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(),
-                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile());
+                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(), KEYSTORE_PASSWORD, KEYSTORE_KEY_PASSWORD,
+                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile(), TRUSTSTORE_PASSWORD);
 
         // create the server socket
         SSLServerSocketFactory fact = sslContext.getServerSocketFactory();
