@@ -1,22 +1,23 @@
 package com.malsolo.crypto.tls;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 public class UtilsCertificates {
     private static String printX509Certificate(X509Certificate x509Certificate) {
@@ -103,6 +104,49 @@ public class UtilsCertificates {
             keyStore.load(in, storePassword.toCharArray());
         }
         Collections.list(keyStore.aliases()).forEach(System.out::println);
+    }
+
+    public static void viewKeyStoreEntries(String keyStoreType, Path keyStorePath, char[] keyStorePassword, Map<String, String> aliasAndPasswordsMap) throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+        System.out.printf("Key store entries for type %s at %s\n", keyStoreType, keyStorePath.toString());
+
+        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+
+        try (InputStream in = Files.newInputStream(keyStorePath)) {
+            keyStore.load(in, keyStorePassword);
+        }
+        Collections.list(keyStore.aliases()).forEach(a -> UtilsCertificates.showKeyStoreEntry(keyStore, a, aliasAndPasswordsMap.get(a)));
+    }
+
+    private static void showKeyStoreEntry(KeyStore keyStore, String alias, String keyPassword) {
+        try {
+            System.out.printf("Alias: %s\n", alias);
+            if (keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+                System.out.println("Private Key entry info...");
+                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyPassword.toCharArray()));
+                System.out.printf("Private key: %s\n", Base64.toBase64String(privateKeyEntry.getPrivateKey().getEncoded()));
+                privateKeyEntry.getAttributes().forEach(a -> System.out.printf("Attribute: %s=%s\n", a.getName(), a.getValue()));
+                Arrays.stream(privateKeyEntry.getCertificateChain())
+                        .map(X509Certificate.class::cast)
+                        .map(UtilsCertificates::printX509Certificate)
+                        .forEach(System.out::println);
+                System.out.println("\nEnd Private Key entry info.");
+            }
+            else if (keyStore.entryInstanceOf(alias, KeyStore.TrustedCertificateEntry.class)) {
+                System.out.println("Trusted certificate entry info...");
+                KeyStore.TrustedCertificateEntry trustedCertificateEntry = (KeyStore.TrustedCertificateEntry) keyStore.getEntry(alias, null);
+                System.out.printf("X509 certificate: %s\n",
+                        UtilsCertificates.printX509Certificate((X509Certificate) trustedCertificateEntry.getTrustedCertificate())
+                );
+                trustedCertificateEntry.getAttributes().forEach(a -> System.out.printf("Attribute: %s=%s\n", a.getName(), a.getValue()));
+                System.out.println("\nEnd Trusted certificate entry info.");
+            }
+            else {
+                System.out.println("Entry: not managed.");
+            }
+        }
+        catch (UnrecoverableEntryException | NoSuchAlgorithmException | KeyStoreException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }

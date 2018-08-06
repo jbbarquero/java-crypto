@@ -4,9 +4,11 @@ import javax.net.ssl.*;
 import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.Principal;
+import java.util.HashMap;
 
 import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
 
@@ -17,13 +19,13 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
-    private static final String KEYSTORE_FILE_NAME = Utils.SERVER_NAME + ".jks";
-    private static final char[] KEYSTORE_PASSWORD = Utils.SERVER_PASSWORD;
-    private static final char[] KEYSTORE_KEY_PASSWORD = Utils.SERVER_PASSWORD;
-    private static final String TRUSTSTORE_FILE_NAME = Utils.TRUST_STORE_NAME + ".jks";
-    private static final char[] TRUSTSTORE_PASSWORD = Utils.TRUST_STORE_PASSWORD;
-    private static final String EXPECTED_ENTITY_NAME = Utils.END_ENTITY_CERTIFICATE_SUBJECT_DN;
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils2/";
+    private static final String KEYSTORE_FILE_NAME = Utils2.SERVER_NAME + ".jks";
+    private static final char[] KEYSTORE_PASSWORD = Utils2.SERVER_PASSWORD;
+    private static final char[] KEYSTORE_KEY_PASSWORD = Utils2.SERVER_PASSWORD;
+    private static final String TRUSTSTORE_FILE_NAME = Utils2.TRUST_STORE_NAME + ".jks";
+    private static final char[] TRUSTSTORE_PASSWORD = Utils2.TRUST_STORE_PASSWORD;
+    private static final String EXPECTED_ENTITY_NAME = Utils2.END_ENTITY_CERTIFICATE_SUBJECT_DN;
 
     /**
      * Check that the principal we have been given is for the end entity.
@@ -70,20 +72,32 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
     }
 
     public static void main(String[] args) throws Exception {
-        SSLContext sslContext = createSSLContext(
-                Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME).toFile(), KEYSTORE_PASSWORD, KEYSTORE_KEY_PASSWORD,
-                Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME).toFile(), TRUSTSTORE_PASSWORD);
+        Path keyStorePath = Paths.get(CERTS_PATH + KEYSTORE_FILE_NAME);
+        Path trustStorePath = Paths.get(CERTS_PATH + TRUSTSTORE_FILE_NAME);
 
+        SSLContext sslContext = createSSLContext(
+                keyStorePath.toFile(), KEYSTORE_PASSWORD, KEYSTORE_KEY_PASSWORD,
+                trustStorePath.toFile(), TRUSTSTORE_PASSWORD);
+
+        System.out.println("Server key stores being used:");
+        UtilsCertificates.viewKeyStoreEntries("JKS", keyStorePath, KEYSTORE_PASSWORD,
+                new HashMap<String, String>() {{ put(Utils2.SERVER_NAME, new String(KEYSTORE_KEY_PASSWORD)); }}); //See CreateKeyStores2
+        UtilsCertificates.viewKeyStoreEntries("JKS", trustStorePath, TRUSTSTORE_PASSWORD, new HashMap<>());
+
+        System.out.println("Server: create the Socket");
         // create the server socket
         SSLServerSocketFactory fact = sslContext.getServerSocketFactory();
         SSLServerSocket        sSock = (SSLServerSocket)fact.createServerSocket(Constants.PORT_NO);
 
         sSock.setNeedClientAuth(true);
 
+        System.out.println("Server: accept");
         SSLSocket sslSock = (SSLSocket)sSock.accept();
 
+        System.out.println("Server: start handshake");
         sslSock.startHandshake();
 
+        System.out.println("Server: processing...");
         // process if principal checks out
         SSLSession sslSession = sslSock.getSession();
         viewCertificates(sslSession);
@@ -91,7 +105,7 @@ public class SSLServerWithClientAuthIdExample extends SSLServerExample {
             System.out.println("doProtocol");
             doProtocol(sslSock);
         }
-
+        System.out.println("Server: processing. Done.");
     }
 
 }
