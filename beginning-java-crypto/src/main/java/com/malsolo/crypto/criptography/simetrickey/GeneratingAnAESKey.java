@@ -1,4 +1,4 @@
-package com.malsolo.crypto.keyencription.simetric;
+package com.malsolo.crypto.criptography.simetrickey;
 
 import org.bouncycastle.util.encoders.Base64;
 
@@ -10,7 +10,7 @@ import static com.malsolo.crypto.util.Utils.installBouncyCastleProvider;
 
 public class GeneratingAnAESKey {
 
-    public static SecretKey generateKey() throws GeneralSecurityException {
+    private static SecretKey generateKey() throws GeneralSecurityException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES", "BC");
         keyGenerator.init(256);
         return keyGenerator.generateKey();
