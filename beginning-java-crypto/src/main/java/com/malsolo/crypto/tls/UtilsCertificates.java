@@ -31,12 +31,14 @@ public class UtilsCertificates {
             //From http://www.javased.com/?post=1270703
             //Should try https://stackoverflow.com/a/5470268
 
-            return String.format("[Serial: %s] MD5: %s (SHA1: %s). Owner: %s, Issuer: %s",
+            return String.format("[Serial: %s] MD5: %s (SHA1: %s). Owner: %s, Issuer: %s\n\tSignature Algorithm: %s [OID = %s]",
                     x509Certificate.getSerialNumber().toString(),
                     hexify(digest).toUpperCase(),
                     digestHex,
                     x509Certificate.getSubjectX500Principal().toString(),
-                    x509Certificate.getIssuerX500Principal().toString()
+                    x509Certificate.getIssuerX500Principal().toString(),
+                    x509Certificate.getSigAlgName(),
+                    x509Certificate.getSigAlgOID()
                     );
         } catch (NoSuchAlgorithmException | CertificateEncodingException e) {
             e.printStackTrace();
