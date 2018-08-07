@@ -25,12 +25,13 @@ public class CreateKeyStores2 {
     public static void main(String[] args) throws OperatorCreationException, GeneralSecurityException, IOException {
         Security.addProvider(new BouncyCastleProvider());
 
-        KeyPairGenerator kpGen = KeyPairGenerator.getInstance("EC", "BC");
+        //KeyPairGenerator kpGen = KeyPairGenerator.getInstance("EC", "BC");
+        KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA", "BC");
 
         // Basic Public Key Certificate
         KeyPair trustKp = kpGen.generateKeyPair();
         X509CertificateHolder trustCertHolder =
-                createTrustAnchor(trustKp, "SHA256withECDSA");
+                createTrustAnchor(trustKp, "SHA256WithRSAEncryption"); //SHA256withECDSA
 
         X509Certificate trustCert = new JcaX509CertificateConverter()
                 .setProvider("BC")
@@ -46,7 +47,7 @@ public class CreateKeyStores2 {
         X509CertificateHolder caCertHolder =
                 createIntermediateCertificate(trustCertHolder,
                         trustKp.getPrivate(),
-                        "SHA256withECDSA", caKp.getPublic(), 0);
+                        "SHA256WithRSAEncryption", caKp.getPublic(), 0);
 
         X509Certificate caCert = new JcaX509CertificateConverter()
                 .setProvider("BC")
@@ -59,7 +60,7 @@ public class CreateKeyStores2 {
         //End Entity Certificate
         KeyPair endKp = kpGen.generateKeyPair();
 
-        X509CertificateHolder endCertHolder = createEndEntity(caCertHolder, caKp.getPrivate(), "SHA256withECDSA",
+        X509CertificateHolder endCertHolder = createEndEntity(caCertHolder, caKp.getPrivate(), "SHA256WithRSAEncryption",
                         endKp.getPublic(), Utils2.END_ENTITY_CERTIFICATE_SUBJECT_DN);
 
         X509Certificate endCert = new JcaX509CertificateConverter()
@@ -77,7 +78,7 @@ public class CreateKeyStores2 {
         //Server Entity Certificate
         KeyPair serverKp = kpGen.generateKeyPair();
 
-        X509CertificateHolder serverCertHolder = createEndEntity(caCertHolder, caKp.getPrivate(), "SHA256withECDSA",
+        X509CertificateHolder serverCertHolder = createEndEntity(caCertHolder, caKp.getPrivate(), "SHA256WithRSAEncryption",
                         serverKp.getPublic(), Utils2.END_SERVER_CERTIFICATE_SUBJECT_DN);
 
         X509Certificate serverCert = new JcaX509CertificateConverter()

@@ -20,14 +20,14 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
-    private static final String KEYSTORE_FILE_NAME = Utils.SERVER_NAME + ".jks";
-    private static final char[] KEYSTORE_PASSWORD = Utils.SERVER_PASSWORD;
-    private static final char[] KEYSTORE_KEY_PASSWORD = Utils.SERVER_PASSWORD;
-    private static final String KEYSTORE_KEY_ALIAS = Utils.SERVER_NAME;
-    private static final String TRUSTSTORE_FILE_NAME = Utils.TRUST_STORE_NAME + ".jks";
-    private static final char[] TRUSTSTORE_PASSWORD = Utils.TRUST_STORE_PASSWORD;
-    private static final String EXPECTED_ENTITY_NAME = Utils.END_ENTITY_CERTIFICATE_SUBJECT_DN;
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils2/";
+    private static final String KEYSTORE_FILE_NAME = Utils2.SERVER_NAME + ".jks";
+    private static final char[] KEYSTORE_PASSWORD = Utils2.SERVER_PASSWORD;
+    private static final char[] KEYSTORE_KEY_PASSWORD = Utils2.SERVER_PASSWORD;
+    private static final String KEYSTORE_KEY_ALIAS = Utils2.SERVER_NAME;
+    private static final String TRUSTSTORE_FILE_NAME = Utils2.TRUST_STORE_NAME + ".jks";
+    private static final char[] TRUSTSTORE_PASSWORD = Utils2.TRUST_STORE_PASSWORD;
+    private static final String EXPECTED_ENTITY_NAME = Utils2.END_ENTITY_CERTIFICATE_SUBJECT_DN;
 
     /**
      * Check that the principal we have been given is for the end entity.
