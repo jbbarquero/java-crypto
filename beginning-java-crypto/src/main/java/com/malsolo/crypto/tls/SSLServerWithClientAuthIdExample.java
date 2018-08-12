@@ -22,7 +22,7 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLServerWithClientAuthIdExample extends SSLServerExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
+    private static final String CERTS_PATH = "certsFromUtils/";
     private static final String KEYSTORE_FILE_NAME = Utils.SERVER_NAME + ".jks";
     private static final char[] KEYSTORE_PASSWORD = Utils.SERVER_PASSWORD;
     private static final char[] KEYSTORE_KEY_PASSWORD = Utils.SERVER_PASSWORD;

@@ -20,7 +20,7 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
+    private static final String CERTS_PATH = "certsFromUtils/";
     private static final String KEYSTORE_FILE_NAME = Utils.CLIENT_NAME + ".p12";
     private static final char[] KEYSTORE_PASSWORD = Utils.CLIENT_PASSWORD;
     private static final String KEYSTORE_KEY_ALIAS = Utils.CLIENT_NAME;
