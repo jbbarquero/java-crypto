@@ -20,13 +20,13 @@ import static com.malsolo.crypto.tls.UtilsCertificates.viewCertificates;
  */
 public class SSLClientWithClientAuthTrustExample extends SSLClientExample {
 
-    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils/";
-    private static final String KEYSTORE_FILE_NAME = Utils.CLIENT_NAME + ".p12";
-    private static final char[] KEYSTORE_PASSWORD = Utils.CLIENT_PASSWORD;
-    private static final String KEYSTORE_KEY_ALIAS = Utils.CLIENT_NAME;
-    private static final char[] KEYSTORE_KEY_PASSWORD = Utils.CLIENT_PASSWORD;
-    private static final String TRUSTSTORE_FILE_NAME = Utils.TRUST_STORE_NAME + ".jks";
-    private static final char[] TRUSTSTORE_PASSWORD = Utils.TRUST_STORE_PASSWORD;
+    private static final String CERTS_PATH = "beginning-java-crypto/certsFromUtils2/";
+    private static final String KEYSTORE_FILE_NAME = Utils2.CLIENT_NAME + ".p12";
+    private static final char[] KEYSTORE_PASSWORD = Utils2.CLIENT_PASSWORD;
+    private static final String KEYSTORE_KEY_ALIAS = Utils2.CLIENT_NAME;
+    private static final char[] KEYSTORE_KEY_PASSWORD = Utils2.CLIENT_PASSWORD;
+    private static final String TRUSTSTORE_FILE_NAME = Utils2.TRUST_STORE_NAME + ".jks";
+    private static final char[] TRUSTSTORE_PASSWORD = Utils2.TRUST_STORE_PASSWORD;
 
     /**
      * Create an SSL context with both identity and trust store
