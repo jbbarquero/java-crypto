@@ -1,6 +1,10 @@
 package com.malsolo.bcfipsin100.certs;
 
 import com.malsolo.bcfipsin100.Setup;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.Extension;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,5 +35,37 @@ public class CertificatesConstructorTest {
         assertThat(x509Certificate).isNotNull();
         x509Certificate.checkValidity(new Date());
         x509Certificate.verify(x509Certificate.getPublicKey());
+    }
+
+    @Test
+    public void makeV3CertificateTest() throws Exception {
+        //Given
+        KeyPairGenerator kpGen = KeyPairGenerator.getInstance("EC", Setup.PROVIDER);
+        KeyPair endKp = kpGen.generateKeyPair();
+
+        //And
+        X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
+                .addRDN(BCStyle.C, "ES")
+                .addRDN(BCStyle.ST, "Madrid")
+                .addRDN(BCStyle.L, "Mostoles")
+                .addRDN(BCStyle.O, "Malsolo")
+                .addRDN(BCStyle.OU, "Unit 1")
+                .addRDN(BCStyle.CN, "localhost");
+        X500Name name = x500NameBld.build();
+
+        //And
+        KeyPair trustKp = kpGen.generateKeyPair();
+        X509Certificate rootCertificate = CertificatesConstructor.makeV1Certificate(trustKp, "SHA256withECDSA");
+
+        //When
+        X509Certificate x509Certificate = CertificatesConstructor.makeV3Certificate(name, rootCertificate, trustKp.getPrivate(), endKp.getPublic(), "SHA256withECDSA");
+
+        //Then
+        assertThat(x509Certificate).isNotNull();
+        x509Certificate.checkValidity(new Date());
+        x509Certificate.verify(rootCertificate.getPublicKey());
+        byte[] basicConstrainsExtension = x509Certificate.getExtensionValue(Extension.basicConstraints.getId());
+        assertThat(basicConstrainsExtension).isNotNull();
+        //assertThat(basicConstrainsExtension).isEqualTo("false");
     }
 }
