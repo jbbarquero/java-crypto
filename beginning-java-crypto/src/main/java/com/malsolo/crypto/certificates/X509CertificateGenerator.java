@@ -93,9 +93,9 @@ public class X509CertificateGenerator {
 
         //V3 certificate
         KeyPair pair4V3 = Utils.generateRSAKeyPair();
-        X509Certificate certV3 = generateV3Certificate(pair);
-        cert.checkValidity(new Date());
-        cert.verify(certV3.getPublicKey());
+        X509Certificate certV3 = generateV3Certificate(pair4V3);
+        certV3.checkValidity(new Date());
+        certV3.verify(certV3.getPublicKey());
         System.out.println("valid V3 certificate generated");
 
         byte[] usageExt = certV3.getExtensionValue(X509Extensions.KeyUsage.getId());
