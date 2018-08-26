@@ -33,24 +33,14 @@ public class CertificatesConstructor {
 
     private static long serialNumberBase = System.currentTimeMillis();
 
-    public static X509Certificate makeV1Certificate(KeyPair keyPair, String signatureAlgorithm) throws OperatorCreationException, CertificateException {
-
-        X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
-                .addRDN(BCStyle.C, "ES")
-                .addRDN(BCStyle.ST, "Madrid")
-                .addRDN(BCStyle.L, "Mostoles")
-                .addRDN(BCStyle.O, "Malsolo")
-                .addRDN(BCStyle.OU, "Unit 1")
-                .addRDN(BCStyle.CN, "Root Certificate");
-
-        X500Name name = x500NameBld.build();
+    public static X509Certificate makeV1Certificate(X500Name issuer, KeyPair keyPair, String signatureAlgorithm) throws OperatorCreationException, CertificateException {
 
         X509v1CertificateBuilder certBldr = new JcaX509v1CertificateBuilder(
-                name,
+                issuer,
                 calculateSerialNumber(),
                 calculateDate(0),
                 calculateDate(60),
-                name,
+                issuer,
                 keyPair.getPublic());
 
         //SHA384withECDSA

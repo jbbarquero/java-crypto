@@ -28,8 +28,18 @@ public class CertificatesConstructorTest {
         KeyPairGenerator kpGen = KeyPairGenerator.getInstance("EC", Setup.PROVIDER);
         KeyPair trustKp = kpGen.generateKeyPair();
 
+        //And
+        X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
+                .addRDN(BCStyle.C, "ES")
+                .addRDN(BCStyle.ST, "Madrid")
+                .addRDN(BCStyle.L, "Mostoles")
+                .addRDN(BCStyle.O, "Malsolo")
+                .addRDN(BCStyle.OU, "Unit 1")
+                .addRDN(BCStyle.CN, "Root Certificate");
+        X500Name name = x500NameBld.build();
+
         //When
-        X509Certificate x509Certificate = CertificatesConstructor.makeV1Certificate(trustKp, "SHA256withECDSA");
+        X509Certificate x509Certificate = CertificatesConstructor.makeV1Certificate(name, trustKp, "SHA256withECDSA");
 
         //Then
         assertThat(x509Certificate).isNotNull();
@@ -42,20 +52,26 @@ public class CertificatesConstructorTest {
         //Given
         KeyPairGenerator kpGen = KeyPairGenerator.getInstance("EC", Setup.PROVIDER);
         KeyPair endKp = kpGen.generateKeyPair();
-
-        //And
         X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
                 .addRDN(BCStyle.C, "ES")
                 .addRDN(BCStyle.ST, "Madrid")
                 .addRDN(BCStyle.L, "Mostoles")
                 .addRDN(BCStyle.O, "Malsolo")
                 .addRDN(BCStyle.OU, "Unit 1")
-                .addRDN(BCStyle.CN, "localhost");
+                .addRDN(BCStyle.CN, "Root Certificate");
         X500Name name = x500NameBld.build();
 
         //And
         KeyPair trustKp = kpGen.generateKeyPair();
-        X509Certificate rootCertificate = CertificatesConstructor.makeV1Certificate(trustKp, "SHA256withECDSA");
+        X500NameBuilder trustX500NameBld = new X500NameBuilder(BCStyle.INSTANCE)
+                .addRDN(BCStyle.C, "ES")
+                .addRDN(BCStyle.ST, "Madrid")
+                .addRDN(BCStyle.L, "Mostoles")
+                .addRDN(BCStyle.O, "Malsolo")
+                .addRDN(BCStyle.OU, "Unit 1")
+                .addRDN(BCStyle.CN, "localhost");
+        X500Name issuer = trustX500NameBld.build();
+        X509Certificate rootCertificate = CertificatesConstructor.makeV1Certificate(issuer, trustKp, "SHA256withECDSA");
 
         //When
         X509Certificate x509Certificate = CertificatesConstructor.makeV3Certificate(name, rootCertificate, trustKp.getPrivate(), endKp.getPublic(), "SHA256withECDSA");
