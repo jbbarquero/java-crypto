@@ -2,8 +2,6 @@ package com.malsolo.bcfipsin100.certs;
 
 import com.malsolo.bcfipsin100.Setup;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.CertIOException;
@@ -20,14 +18,12 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Set;
 
 public class CertificatesConstructor {
 
@@ -53,7 +49,7 @@ public class CertificatesConstructor {
                 .getCertificate(certHldr);
     }
 
-    public static X509Certificate makeV3Certificate(X500Name subject, X509Certificate caCertificate, PrivateKey caPrivateKey, PublicKey eePublicKey, String signatureAlgorithm) throws OperatorCreationException, CertificateException, NoSuchAlgorithmException, CertIOException {
+    public static X509Certificate makeV3Certificate(X500Name subject, X509Certificate caCertificate, PrivateKey caPrivateKey, PublicKey eePublicKey, String signatureAlgorithm, boolean ca) throws OperatorCreationException, CertificateException, NoSuchAlgorithmException, CertIOException {
         //
         // create the certificate - version 3
         //
@@ -80,10 +76,12 @@ public class CertificatesConstructor {
                 false,
                 extUtils.createSubjectKeyIdentifier(eePublicKey));
 
+        BasicConstraints basicConstraints =
+                ca ? new BasicConstraints(0) : new BasicConstraints(false);
         v3CertBldr.addExtension(
                 Extension.basicConstraints,
                 true,
-                new BasicConstraints(false));
+                basicConstraints);
 
         //"SHA384withECDSA"
         ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm)

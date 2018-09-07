@@ -74,7 +74,7 @@ public class CertificatesConstructorTest {
         X509Certificate rootCertificate = CertificatesConstructor.makeV1Certificate(issuer, trustKp, "SHA256withECDSA");
 
         //When
-        X509Certificate x509Certificate = CertificatesConstructor.makeV3Certificate(name, rootCertificate, trustKp.getPrivate(), endKp.getPublic(), "SHA256withECDSA");
+        X509Certificate x509Certificate = CertificatesConstructor.makeV3Certificate(name, rootCertificate, trustKp.getPrivate(), endKp.getPublic(), "SHA256withECDSA", false);
 
         //Then
         assertThat(x509Certificate).isNotNull();
