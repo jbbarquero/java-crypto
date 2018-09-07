@@ -7,10 +7,8 @@ import java.security.*;
 
 public class EC {
 
-    @SuppressWarnings("WeakerAccess")
-    public final static String ALGORITHM = "EC";
-    @SuppressWarnings("WeakerAccess")
-    public final static int KEY_SIZE = 384;
+    private final static String ALGORITHM = "EC";
+    private final static int KEY_SIZE = 384;
 
     public static KeyPair generateKeyPair() throws GeneralSecurityException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM, Setup.PROVIDER);
