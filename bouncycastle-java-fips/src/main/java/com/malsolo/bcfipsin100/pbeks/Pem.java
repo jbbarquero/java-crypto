@@ -2,23 +2,26 @@ package com.malsolo.bcfipsin100.pbeks;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 public class Pem {
 
+    @SuppressWarnings("Duplicates")
     public static String certificateToString(X509Certificate certificate) throws IOException {
         StringWriter stringWriter = new StringWriter();
         JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter);
 
         pemWriter.writeObject(certificate);
-
         pemWriter.close();
 
         return stringWriter.toString();
@@ -30,6 +33,25 @@ public class Pem {
         X509CertificateHolder certHolder = (X509CertificateHolder)parser.readObject();
 
         return new JcaX509CertificateConverter().getCertificate(certHolder);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static String privateKeyToString(PrivateKey privateKey) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter);
+
+        pemWriter.writeObject(privateKey);
+        pemWriter.close();
+
+        return stringWriter.toString();
+    }
+
+    public static PrivateKey stringToPrivateKey(String pemEncoding) throws IOException {
+        PEMParser parser = new PEMParser(new StringReader(pemEncoding));
+
+        PEMKeyPair pemKeyPair = (PEMKeyPair) parser.readObject();
+
+        return new JcaPEMKeyConverter().getPrivateKey(pemKeyPair.getPrivateKeyInfo());
     }
 
 
