@@ -11,13 +11,14 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
+@SuppressWarnings("WeakerAccess")
 public class KeyStoreUtil {
 
-    private static final String KEYSTORE_TYPE = "JKS"; //"BCFKS"
+    private static final String KEYSTORE_TYPE_JKS = "JKS"; //"BCFKS"
     private static final String KEYSTORE_TYPE_PKCS12 = "PKCS12"; //"BCFKS"
 
     public static void storeCertificate(X509Certificate certificate, String alias, Path storePath, char[] storePassword) throws GeneralSecurityException, IOException {
-        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE, Setup.PROVIDER);
+        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE_JKS); //JKS not supported by BC
 
         keyStore.load(null, null);
 
@@ -29,7 +30,7 @@ public class KeyStoreUtil {
     }
 
     public static void storePrivateKey(PrivateKey privateKey, X509Certificate[] certificateChain, String alias, Path storePath, char[] storePassword) throws GeneralSecurityException, IOException {
-        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE, Setup.PROVIDER);
+        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE_JKS); //JKS not supported by BC
 
         keyStore.load(null, null);
 
