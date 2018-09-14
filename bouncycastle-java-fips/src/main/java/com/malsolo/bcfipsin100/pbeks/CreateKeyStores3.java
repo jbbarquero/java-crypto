@@ -23,18 +23,19 @@ public class CreateKeyStores3 {
 
     private static final String SIGNATURE_ALGORITHM = "SHA384withECDSA";
 
-    public static final String SERVER_STORE_NAME = "server3.jks";
+    public static final String SERVER_STORE_NAME_JKS = "server3.jks";
+    public static final String SERVER_STORE_NAME_P12 = "server3.p12";
     public static final char[] SERVER_STORE_PASSWORD = "serverPassword3".toCharArray();
     public static final String SERVER_STORE_NAME_ENTRY = "server3";
 
-    public static final String CLIENT_STORE_NAME = "client3.p12";
+    public static final String CLIENT_STORE_NAME_P12 = "client3.p12";
+    public static final String CLIENT_STORE_NAME_JKS = "client3.jks";
     public static final char[] CLIENT_STORE_PASSWORD = "clientPassword3".toCharArray();
     public static final String CLIENT_STORE_NAME_ENTRY = "client3";
 
     public static final String TRUST_CERTIFICATE_CER_FILE = "trust_cer3.cer";
     public static final String TRUST_CERTIFICATE_PEM_FILE = "trust_cer3.pem";
     public static final String TRUST_PRIVATE_KEY_PEM_FILE = "trust_key3.pem";
-    public static final String TRUST_STORE_CERT_NAME = "trustStore3.cer";
     public static final String TRUST_STORE_NAME = "trustStore3.jks";
     public static final char[] TRUST_STORE_PASSWORD = "trustPassword3".toCharArray();
     public static final String TRUST_STORE_NAME_ENTRY = "trust3";
@@ -205,22 +206,36 @@ public class CreateKeyStores3 {
         System.out.printf("····· Trust store created: %s\n", trustJksPath.toString());
 
         //Server credentials
-        Path serverJksPath = Paths.get(SERVER_STORE_NAME);
+        Path serverJksPath = Paths.get(SERVER_STORE_NAME_JKS);
+        X509Certificate[] serverCertificateChain = {serverCertificate, certificateAuthorityCertificate, trustCertificate};
         KeyStoreUtil.storePrivateKey(
-                serverKeyPair.getPrivate(),
-                new X509Certificate[]{serverCertificate, certificateAuthorityCertificate, trustCertificate},
+                serverKeyPair.getPrivate(), serverCertificateChain,
                 SERVER_STORE_NAME_ENTRY, serverJksPath, SERVER_STORE_PASSWORD
         );
-        System.out.printf("····· Server store created: %s\n", serverJksPath.toString());
+        System.out.printf("····· Server store created in JKS: %s\n", serverJksPath.toString());
+
+        Path serverP12Path = Paths.get(SERVER_STORE_NAME_P12);
+        KeyStoreUtil.storePrivateKeyPkcs12(
+                serverKeyPair.getPrivate(), serverCertificateChain,
+                SERVER_STORE_NAME_ENTRY, serverP12Path, SERVER_STORE_PASSWORD
+        );
+        System.out.printf("····· Server store created in PKCS12: %s\n", serverP12Path.toString());
 
         //Client credentials
-        Path clientP12Path = Paths.get(CLIENT_STORE_NAME);
-        KeyStoreUtil.storePrivateKeyPkcs12(
-                clientKeyPair.getPrivate(),
-                new X509Certificate[]{clientCertificate, certificateAuthorityCertificate, trustCertificate},
+        X509Certificate[] clientCertificateChain = {clientCertificate, certificateAuthorityCertificate, trustCertificate};
+        Path clientP12Path = Paths.get(CLIENT_STORE_NAME_P12);
+        KeyStoreUtil.storePrivateKey(
+                clientKeyPair.getPrivate(), clientCertificateChain,
                 CLIENT_STORE_NAME_ENTRY, clientP12Path, CLIENT_STORE_PASSWORD
         );
-        System.out.println("····· Client certificate created");
+        System.out.printf("····· Client store created in PKCS12: %s\n", clientP12Path.toString());
+
+        Path clientJksPath = Paths.get(CLIENT_STORE_NAME_JKS);
+        KeyStoreUtil.storePrivateKeyPkcs12(
+                clientKeyPair.getPrivate(), clientCertificateChain,
+                CLIENT_STORE_NAME_ENTRY, clientJksPath, CLIENT_STORE_PASSWORD
+        );
+        System.out.printf("····· Client store created in JKS: %s\n", clientJksPath.toString());
 
         System.out.println("Create stores. Done.");
     }
