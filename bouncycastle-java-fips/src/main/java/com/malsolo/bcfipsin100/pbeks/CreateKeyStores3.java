@@ -119,7 +119,7 @@ public class CreateKeyStores3 {
                         .build(),
                 certificateAuthorityCertificate,
                 certificateAuthorityKeyPair.getPrivate(),
-                serverKeyPair.getPublic(),
+                clientKeyPair.getPublic(),
                 SIGNATURE_ALGORITHM,
                 false
         );
@@ -223,19 +223,19 @@ public class CreateKeyStores3 {
 
         //Client credentials
         X509Certificate[] clientCertificateChain = {clientCertificate, certificateAuthorityCertificate, trustCertificate};
-        Path clientP12Path = Paths.get(CLIENT_STORE_NAME_P12);
-        KeyStoreUtil.storePrivateKey(
-                clientKeyPair.getPrivate(), clientCertificateChain,
-                CLIENT_STORE_NAME_ENTRY, clientP12Path, CLIENT_STORE_PASSWORD
-        );
-        System.out.printf("····· Client store created in PKCS12: %s\n", clientP12Path.toString());
-
         Path clientJksPath = Paths.get(CLIENT_STORE_NAME_JKS);
-        KeyStoreUtil.storePrivateKeyPkcs12(
+        KeyStoreUtil.storePrivateKey(
                 clientKeyPair.getPrivate(), clientCertificateChain,
                 CLIENT_STORE_NAME_ENTRY, clientJksPath, CLIENT_STORE_PASSWORD
         );
         System.out.printf("····· Client store created in JKS: %s\n", clientJksPath.toString());
+
+        Path clientP12Path = Paths.get(CLIENT_STORE_NAME_P12);
+        KeyStoreUtil.storePrivateKeyPkcs12(
+                clientKeyPair.getPrivate(), clientCertificateChain,
+                CLIENT_STORE_NAME_ENTRY, clientP12Path, CLIENT_STORE_PASSWORD
+        );
+        System.out.printf("····· Client store created in PKCS12: %s\n", clientP12Path.toString());
 
         System.out.println("Create stores. Done.");
     }
