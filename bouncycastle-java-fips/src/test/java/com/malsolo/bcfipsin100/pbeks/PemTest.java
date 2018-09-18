@@ -5,10 +5,14 @@ import com.malsolo.bcfipsin100.certs.CertificatesConstructor;
 import com.malsolo.bcfipsin100.utilities.EC;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -63,6 +67,31 @@ public class PemTest {
                 .isEqualTo(Hex.toHexString(keyPair.getPrivate().getEncoded()));
         String pemAgain = Pem.privateKeyToString(privateKeyFromPem);
         assertThat(pemAgain).isEqualTo(pem);
+    }
+
+    @Test
+    public void testCertificationRequestToString() throws Exception {
+        /*
+         * CSR created with OpenSSL:
+         * openssl req -utf8 -sha256 -newkey rsa:4096 -keyout private.key -nodes -out cert.csr \
+         * -subj "/O=Malsolo/OU=Unit/OU=Testing/OU=Application/CN=localhost"
+         */
+        String subject = "O=Malsolo,OU=Unit,OU=Testing,OU=Application,CN=localhost";
+
+        URL csrPemUrl = getClass().getClassLoader().getResource("cert.csr");
+        assertThat(csrPemUrl).isNotNull();
+
+        String pem = new String(Files.readAllBytes(Paths.get(csrPemUrl.toURI())));
+        assertThat(pem).isNotNull();
+        assertThat(pem).isNotEmpty();
+
+        System.out.println(pem);
+
+        PKCS10CertificationRequest pkcs10CertificationRequest = Pem.certificationRequestToString(pem);
+        assertThat(pkcs10CertificationRequest).isNotNull();
+
+        System.out.printf("%s\n", pkcs10CertificationRequest.getSubject().toString());
+        assertThat(pkcs10CertificationRequest.getSubject().toString()).isEqualTo(subject);
     }
 
 }

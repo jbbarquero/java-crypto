@@ -6,6 +6,8 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.util.io.pem.PemObject;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -52,6 +54,14 @@ public class Pem {
         PEMKeyPair pemKeyPair = (PEMKeyPair) parser.readObject();
 
         return new JcaPEMKeyConverter().getPrivateKey(pemKeyPair.getPrivateKeyInfo());
+    }
+
+    public static PKCS10CertificationRequest certificationRequestToString(String pemEncoding) throws IOException {
+        PEMParser parser = new PEMParser(new StringReader(pemEncoding));
+
+        PemObject pemObject = parser.readPemObject();
+
+        return new PKCS10CertificationRequest(pemObject.getContent());
     }
 
 
