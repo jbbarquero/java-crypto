@@ -26,6 +26,8 @@ public class CertificateFactoryExample {
 
         System.out.println("issuer: " + x509Cert.getIssuerX500Principal());
 
+        System.out.println(x509Cert);
+
 
     }
 
