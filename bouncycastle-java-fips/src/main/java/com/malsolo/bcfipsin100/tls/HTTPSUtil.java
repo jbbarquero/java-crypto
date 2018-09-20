@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("WeakerAccess")
 public class HTTPSUtil {
 
-    public static final String CERTS_PATH = "bouncycastle-java-fips/certsFromUtils3/";
+    public static final String CERTS_PATH = "bouncycastle-java-fips/certsFromUtils0/";
 
     public static SSLContext createSSLContext(File keyStoreFile, char[] keyStorePassword, String keyStoreType,
                                                File trustStoreFile, char[] trustStorePassword, String trustStoreType) throws Exception {

@@ -203,7 +203,12 @@ public class CreateKeyStores3 {
         //Trust store
         Path trustJksPath = Paths.get(TRUST_STORE_NAME);
         storeCertificate(trustCertificate, TRUST_STORE_NAME_ENTRY, trustJksPath, TRUST_STORE_PASSWORD);
-        System.out.printf("····· Trust store created: %s\n", trustJksPath.toString());
+        System.out.printf("····· Trust store (ROOT) created: %s\n", trustJksPath.toString());
+
+        //Trust store
+        Path caJksPath = Paths.get("mini_" + TRUST_STORE_NAME);
+        storeCertificate(certificateAuthorityCertificate, TRUST_STORE_NAME_ENTRY, caJksPath, TRUST_STORE_PASSWORD);
+        System.out.printf("····· Trust store (CA) created: %s\n", caJksPath.toString());
 
         //Server credentials
         Path serverJksPath = Paths.get(SERVER_STORE_NAME_JKS);
@@ -221,6 +226,13 @@ public class CreateKeyStores3 {
         );
         System.out.printf("····· Server store created in PKCS12: %s\n", serverP12Path.toString());
 
+        Path serverMiniP12Path = Paths.get("mini_" + SERVER_STORE_NAME_P12);
+        KeyStoreUtil.storePrivateKeyPkcs12(
+                serverKeyPair.getPrivate(), new X509Certificate[]{serverCertificate},
+                SERVER_STORE_NAME_ENTRY, serverMiniP12Path, SERVER_STORE_PASSWORD
+        );
+        System.out.printf("····· Server store created in PKCS12: %s\n", serverMiniP12Path.toString());
+
         //Client credentials
         X509Certificate[] clientCertificateChain = {clientCertificate, certificateAuthorityCertificate, trustCertificate};
         Path clientJksPath = Paths.get(CLIENT_STORE_NAME_JKS);
@@ -236,6 +248,13 @@ public class CreateKeyStores3 {
                 CLIENT_STORE_NAME_ENTRY, clientP12Path, CLIENT_STORE_PASSWORD
         );
         System.out.printf("····· Client store created in PKCS12: %s\n", clientP12Path.toString());
+
+        Path clientMiniP12Path = Paths.get("mini_" + CLIENT_STORE_NAME_P12);
+        KeyStoreUtil.storePrivateKeyPkcs12(
+                clientKeyPair.getPrivate(), new X509Certificate[]{clientCertificate},
+                CLIENT_STORE_NAME_ENTRY, clientMiniP12Path, CLIENT_STORE_PASSWORD
+        );
+        System.out.printf("····· Client store created in MINI PKCS12: %s\n", clientMiniP12Path.toString());
 
         System.out.println("Create stores. Done.");
     }
