@@ -24,7 +24,7 @@ public class HTTPSServer {
                 Paths.get(CERTS_PATH + SERVER_STORE_NAME_P12).toFile(),
                 SERVER_STORE_PASSWORD,
                 "PKCS12",
-                Paths.get(CERTS_PATH + "mini_" + TRUST_STORE_NAME).toFile(),
+                Paths.get(CERTS_PATH + TRUST_STORE_NAME).toFile(),
                 TRUST_STORE_PASSWORD,
                 "JKS"
         );

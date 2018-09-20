@@ -30,15 +30,8 @@ public class HTTPSClient {
         }
         System.out.printf("HTTPS clientSocket to host %s and port %d \n", host, port);
 
-        System.out.println(Paths.get(CERTS_PATH + "mini_" + CLIENT_STORE_NAME_P12).toFile());
-        System.out.println(Paths.get(CERTS_PATH + "mini_" + CLIENT_STORE_NAME_P12).toFile().exists());
-        ReadKeystores.readPKCS12(
-                Paths.get(CERTS_PATH + "mini_" + CLIENT_STORE_NAME_P12).toFile(),
-                CLIENT_STORE_PASSWORD
-        );
-
         SSLContext sslClientContext = createSSLContext(
-                Paths.get(CERTS_PATH + "mini_" + CLIENT_STORE_NAME_P12).toFile(),
+                Paths.get(CERTS_PATH + CLIENT_STORE_NAME_P12).toFile(),
                 CLIENT_STORE_PASSWORD,
                 "PKCS12",
                 Paths.get(CERTS_PATH + TRUST_STORE_NAME).toFile(),
