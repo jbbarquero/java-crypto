@@ -77,8 +77,9 @@ public class ReadKeystores {
     }
 
     public static void main(String[] args) throws Exception {
-        Path path = Paths.get("bouncycastle-java-fips/certsFromUtils3/client3.p12");
-        System.out.printf("%s exists? %b\n", path.toString(), path.toFile().exists());
-        readPKCS12(path.toFile(), CLIENT_STORE_PASSWORD);
+        readPKCS12(
+                Paths.get("bouncycastle-java-fips/certsFromUtils3/client3.p12").toFile(),
+                CLIENT_STORE_PASSWORD
+        );
     }
 }
