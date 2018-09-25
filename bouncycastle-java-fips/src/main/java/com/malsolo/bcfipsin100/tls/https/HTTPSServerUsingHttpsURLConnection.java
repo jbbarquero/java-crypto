@@ -19,7 +19,7 @@ public class HTTPSServerUsingHttpsURLConnection {
         this.certsPath = certsPath;
     }
 
-    public void recevie() throws Exception {
+    public void receive() throws Exception {
 
         System.out.println("HTTPS Server: receive");
 
@@ -100,7 +100,7 @@ public class HTTPSServerUsingHttpsURLConnection {
         HTTPSServerUsingHttpsURLConnection server =
                 new HTTPSServerUsingHttpsURLConnection(port, mainCertsPath);
 
-        server.recevie();
+        server.receive();
 
     }
 
